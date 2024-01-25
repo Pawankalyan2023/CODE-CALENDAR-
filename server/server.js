@@ -4,6 +4,7 @@ const cors = require('cors');
 const axios = require('axios');
 const { config } = require('dotenv');
 require('dotenv').config();
+const Port = process.env.PORT || 3001;
 
 
 app.use(cors());
@@ -34,7 +35,7 @@ app.get('/api/data', async (req, res) => {
 });
 
 
-app.listen(3001, () => {
+app.listen(Port, () => {
   console.log('Server is running on port 3001');
 });
 
