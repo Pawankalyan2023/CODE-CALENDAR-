@@ -1,15 +1,26 @@
 import './App.css';
-import Navi from './Component/navbar';
+import { Login } from './Auth/Login';
 import Pageindex from './Content';
-import Foter from './Footer/footer';
+import {BrowserRouter , Route , Routes} from 'react-router-dom'
+import { SignedIn, SignedOut } from "@clerk/clerk-react"
 
 function App() {
   return (
-    <div className="App">
-      <Navi/>
-      <Pageindex/> 
-      <Foter/>
+    <div>
+    <SignedOut>
+      <Login/>
+    </SignedOut>
+    <SignedIn>
+          <Pageindex/>
+    </SignedIn>
+     <BrowserRouter>
+      <Routes>
+        <Route path='./' Component={Login}/>
+        <Route path='.home' Component={Pageindex}/>
+      </Routes>
+    </BrowserRouter>
     </div>
+   
   );
 }
 
