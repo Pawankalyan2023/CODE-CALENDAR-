@@ -12,7 +12,8 @@ export default function Pageindex() {
   const itemsPerPage = 50;
 
   useEffect(() => {
-    axios.get('http://localhost:3001/api/data')
+    const apireq = process.env.REACT_APP_BACKFETCH;
+    axios.get(apireq)
       .then(res => {
         setFetchData(res.data);
       })
