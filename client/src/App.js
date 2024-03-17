@@ -1,26 +1,23 @@
-import './App.css';
-import { Login } from './Auth/Login';
-import Pageindex from './Content';
-import {BrowserRouter , Route , Routes} from 'react-router-dom'
-import { SignedIn, SignedOut } from "@clerk/clerk-react"
+import "./App.css";
+import Singin from "./Auth/Singin";
+import AuthProvider from "./Context/AuthContext";
+import Signup from "./Auth/Singup";
+import Pageindex from "./Content";
+import Getdetails from "./Content/Getdetails";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
-    <div>
-    <SignedOut>
-      <Login/>
-    </SignedOut>
-    <SignedIn>
-          <Pageindex/>
-    </SignedIn>
-     <BrowserRouter>
-      <Routes>
-        <Route path='./' Component={Login}/>
-        <Route path='.home' Component={Pageindex}/>
-      </Routes>
-    </BrowserRouter>
-    </div>
-   
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" Component={Singin} />
+          <Route path="/home" Component={Pageindex} />
+          <Route path="/signup" Component={Signup} />
+          <Route path="/details" Component={Getdetails} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
