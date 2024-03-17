@@ -4,13 +4,11 @@ import { Card, Pagination } from "flowbite-react";
 import Navi from "../Component/navbar";
 import Carousell from "../corosoule/slider";
 import Foter from "../Footer/footer";
+import Skeleton from "react-loading-skeleton";
+import SkeletonLoad from "../Component/Skeleton";
 // import { google } from 'googleapis';
 
-
-
-
 export default function Pageindex() {
-
   // const oAuth2Client = new google.auth.OAuth2(
   //  process.env.REACT_APP_CLIENT_ID,
   //   process.env.REACT_APP_CLIENT_SECRET,
@@ -18,14 +16,14 @@ export default function Pageindex() {
   // oAuth2Client.setCredentials({
   //   refresh_token: process.env.REACT_APP_REFRESH_TOKEN,
   // });
-  
-  // const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
+  // const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
 
   const [fetchdata, setFetchData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 50;
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const apireq = process.env.REACT_APP_BACKFETCH;
@@ -34,6 +32,7 @@ export default function Pageindex() {
       .then((res) => {
         setFetchData(res.data);
         console.log(res.data);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -63,6 +62,12 @@ export default function Pageindex() {
       contest.host.toLowerCase().includes(searchQuery) ||
       contest.event.toLowerCase().includes(searchQuery)
   );
+
+
+  /* 
+    Update with your own Client Id and Api key 
+  */
+ 
 
   return (
     <div>
@@ -133,6 +138,7 @@ export default function Pageindex() {
       </form>
       {/* </div> */}
       <h2 className="font-medium text-2xl pl-9 px-3 py-3">Upcoming Contest</h2>
+      {isLoading && <SkeletonLoad cnt = {itemsPerPage} />}
       {filteredData.length === 0 ? (
         <p className="text-center font-bold p-10 text-gray-500">
           No Upcoming Contest found.
@@ -210,16 +216,13 @@ function Forms({ data }) {
     const hours = Math.floor((duration % (24 * 60)) / 60);
     const minutes = duration % 60;
 
-
     if (hours === 0 && minutes === 0) {
       return "Less than an hour";
+    } else if (minutes === 0) {
+      return `${hours} hours`;
+    } else {
+      return `${hours} hours, ${minutes} minutes`;
     }
-    else if (minutes === 0) {
-    return `${hours} hours`;
-  } 
-  else {
-    return `${hours} hours, ${minutes} minutes`;
-  }
   };
 
   const handleShare = async () => {
@@ -235,6 +238,92 @@ function Forms({ data }) {
       console.error("Error sharing:", error);
     }
   };
+
+  var gapi = window.gapi
+
+  var CLIENT_ID = process.env.REACT_APP_CLIENT_ID
+  var API_KEY = process.env.REACT_APP_SECRET
+  var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
+  var SCOPES = "https://www.googleapis.com/auth/calendar.events"
+
+  const handleSetCalendar = () => {
+    gapi.load('client:auth2', () => {
+      console.log('loaded client')
+
+      gapi.client.init({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        discoveryDocs: DISCOVERY_DOCS,
+        scope: SCOPES,
+      })
+
+      gapi.client.load('calendar', 'v3', () => console.log('bam!'))
+
+      gapi.auth2.getAuthInstance().signIn()
+      .then(() => {
+        
+        var event = {
+          'summary': 'Awesome Event!',
+          'location': '800 Howard St., San Francisco, CA 94103',
+          'description': 'Really great refreshments',
+          'start': {
+            'dateTime': '2020-06-28T09:00:00-07:00',
+            'timeZone': 'America/Los_Angeles'
+          },
+          'end': {
+            'dateTime': '2020-06-28T17:00:00-07:00',
+            'timeZone': 'America/Los_Angeles'
+          },
+          'recurrence': [
+            'RRULE:FREQ=DAILY;COUNT=2'
+          ],
+          'attendees': [
+            {'email': 'lpage@example.com'},
+            {'email': 'sbrin@example.com'}
+          ],
+          'reminders': {
+            'useDefault': false,
+            'overrides': [
+              {'method': 'email', 'minutes': 24 * 60},
+              {'method': 'popup', 'minutes': 10}
+            ]
+          }
+        }
+
+        var request = gapi.client.calendar.events.insert({
+          'calendarId': 'primary',
+          'resource': event,
+        })
+
+        request.execute(event => {
+          console.log(event)
+          window.open(event.htmlLink)
+        })
+        
+
+        /*
+            Uncomment the following block to get events
+        */
+        /*
+        // get events
+        gapi.client.calendar.events.list({
+          'calendarId': 'primary',
+          'timeMin': (new Date()).toISOString(),
+          'showDeleted': false,
+          'singleEvents': true,
+          'maxResults': 10,
+          'orderBy': 'startTime'
+        }).then(response => {
+          const events = response.result.items
+          console.log('EVENTS: ', events)
+        })
+        */
+    
+
+      })
+    })
+  }
+
 
   return (
     <Card className="mt-2 mb-2 ml-10 mr-10">
@@ -271,7 +360,7 @@ function Forms({ data }) {
           Share
         </button>
         <button
-          // onClick={handleSetCalendar}
+          onClick={handleSetCalendar}
           className="rounded-lg bg-cyan-700 px-5 py-2.5 ml-3 mr-3 text-center text-sm font-smal text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
         >
           Add to Calendar
