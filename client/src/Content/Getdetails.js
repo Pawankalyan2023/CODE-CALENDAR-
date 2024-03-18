@@ -17,23 +17,24 @@ export default function Getdetails() {
   const [codeforcespref, setcodeforcespref] = useState("");
   const [codechiefpref, setcodechiefpref] = useState("");
   const [gfgpref, setgfgpref] = useState("");
-
+  const [displayLeetcode, setDisplayLeetcode] = useState(""); 
   const handledetails = async () => {
 
     console.log(leetcode, codeforces, hackerrank, codechief);
 
-    const updatedetails = process.env.REACT_APP_UPDATEDETAILS;
+    const updatedetails = process.env.REACT_APP_UPDATEDETAILS || "http://localhost:3001/updateDetails";
 
     const response = await axios.post(updatedetails, {
       leetcode: leetcode,
       codeforces: codeforces,
-      hackerrank: hackerrank,
-      codechief: codechief,
+      // hackerrank: hackerrank,
+      codechef: codechief,
     });
 
     if(response.status === 200){
-        navigate("/home");
+        // navigate("/home");
         console.log(response.data);
+        setDisplayLeetcode(response.data.leetcodeProfile);
     }
     else{
         alert("Error in sending details");
@@ -59,6 +60,8 @@ export default function Getdetails() {
           <input
             type="text"
             id="base-input"
+            value={leetcode}
+            onChange={(e)=>setleecode(e.target.value)}
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
@@ -85,6 +88,8 @@ export default function Getdetails() {
           <input
             type="text"
             id="base-input"
+            value={codechief}
+            onChange={(e)=>setcodechief(e.target.value)}
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
@@ -98,6 +103,8 @@ export default function Getdetails() {
           <input
             type="text"
             id="base-input"
+            value={codeforces}
+            onChange={(e)=>setcodeforces(e.target.value)}
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
@@ -175,6 +182,7 @@ export default function Getdetails() {
           <Button className="my-5" onClick={handledetails}>
             Submit Details
           </Button>
+      <div dangerouslySetInnerHTML={{ __html: displayLeetcode }}/>
         </div>
       </div>
     </div>

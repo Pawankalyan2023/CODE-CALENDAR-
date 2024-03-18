@@ -2,17 +2,13 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const axios = require('axios');
-const { config } = require('dotenv');
-const pool = require('./db');
+// const { config } = require('dotenv');
+// const pool = require('./db');
 require('dotenv').config();
 const Port = process.env.PORT || 3001;
 
 
-app.use(
-  cors({
-    origin: process.env.FRONTEND_ORIGIN,
-  })
-);
+app.use(cors());
 
 app.use(express.json());
 
@@ -81,7 +77,20 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
+app.post('/updateDetails', async(req, res)=>{
+  try {
+    const {leetcode, codechef, codeforces} = req.body;
+    const leetcodeProfile = await axios.get('https://leetcard.jacoblin.cool/HARI_PRASAD_2003?ext=contest');
 
+
+    res.status(200).json({
+      leetcodeProfile: leetcodeProfile.data,
+    })
+
+  } catch (error) {
+    
+  }
+})
 
 
 app.listen(Port, () => {

@@ -3,10 +3,15 @@
     "start": "nodemon server.js"
   },
   "dependencies": {
-    "axios": "^1.6.3",
+    "axios": "^1.6.8",
+    "axois": "^0.0.1-security",
+    "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
-    "pg": "^8.11.3"
+    "leetcode-query": "^1.2.3",
+    "pg": "^8.11.3",
+    "xmldom": "^0.6.0",
+    "xpath": "^0.0.34"
   }
 }
