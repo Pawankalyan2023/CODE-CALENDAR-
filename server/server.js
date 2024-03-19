@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const axios = require('axios');
+const cheerio = require('cheerio');
+const xpath = require('xpath');
 // const { config } = require('dotenv');
 // const pool = require('./db');
 require('dotenv').config();
@@ -80,11 +82,18 @@ app.post('/api/register', async (req, res) => {
 app.post('/updateDetails', async(req, res)=>{
   try {
     const {leetcode, codechef, codeforces} = req.body;
-    const leetcodeProfile = await axios.get('https://leetcard.jacoblin.cool/HARI_PRASAD_2003?ext=contest');
+    const leetcodeProfile = await axios.get(`https://leetcard.jacoblin.cool/${leetcode}?ext=contest`);
 
+    const codechefProfile = await axios.get(`https://codechef-api.vercel.app/${codechef}`);
+
+    const codeforcesProfile = await axios.get(`https://codeforces.com/api/user.info?handles=${codeforces}`)
+
+    
 
     res.status(200).json({
       leetcodeProfile: leetcodeProfile.data,
+      codechefProfile: codechefProfile.data,
+      codeforcesProfile: codeforcesProfile.data,
     })
 
   } catch (error) {
