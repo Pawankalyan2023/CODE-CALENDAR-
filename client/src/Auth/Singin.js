@@ -6,7 +6,7 @@ import { AuthContext } from "../Context/AuthContext";
 
 export default function Singin() {
   
-  const { login, logout, user, isloggedin } = useContext(AuthContext);
+  const { login , isLoggedIn} = useContext(AuthContext);
 
   const navigation = useNavigate();
 
@@ -18,17 +18,17 @@ export default function Singin() {
 
     const usercurdata = { email, password };
 
-    console.log(usercurdata);
+    // console.log(usercurdata);
 
     try {
       const response = await axios.post(loginauth, {
         email: email,
         password: password,
       });
-      console.log(response);
+      // console.log(response);
 
       if (response && response.data) {
-        console.log("Login successful:", response.data);
+        // console.log("Login successful:", response.data);
         login({ userdata: usercurdata });
         navigation("/home");
       } else {
@@ -42,8 +42,10 @@ export default function Singin() {
   };
 
   return (
+    !isLoggedIn ? (
     <section class="bg-gray-50 dark:bg-gray-900">
       <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+      <h2 className="text-4xl pb-10">Welcome to Code Calendar ❤️</h2>
         <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
@@ -89,27 +91,27 @@ export default function Singin() {
               <div class="flex items-center justify-between">
                 <button
                   href="#"
-                  class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
+                  class="text-sm font-medium dark:text-white text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Forgot password?
                 </button>
               </div>
               <button
-                class="w-full text-white bg-gray-500 bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                class="w-full text-white dark:bg-green-400 bg-gray-500 bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 onClick={handleLogin}
               >
                 Login
               </button>
-              <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+              <p class="text-sm font-light text-gray-500 dark:text-white">
                 Don’t have an account yet?{" "}
                 <Link
                   to="/signup"
-                  class="font-medium text-black ml-5 text-primary-600 hover:underline dark:text-primary-500"
+                  class="font-medium text-black dark:text-white ml-5 text-primary-600 hover:underline dark:text-primary-500"
                 >
                   Sign up
                 </Link>
               </p>
-              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+              {/* <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Ar u an Admin?
                 <Link
                   to="/adminauth"
@@ -117,11 +119,12 @@ export default function Singin() {
                 >
                   Access Here!
                 </Link>
-              </p>
+              </p> */}
             </div>
           </div>
         </div>
       </div>
     </section>
+    ) : navigation("/home")
   );
 }

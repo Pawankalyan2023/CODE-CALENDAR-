@@ -1,28 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useContext } from "react";
 import axios from "axios";
 import { Card, Pagination } from "flowbite-react";
 import Navi from "../Component/navbar";
 import Carousell from "../corosoule/slider";
+import { AuthContext } from "../Context/AuthContext";
 import Foter from "../Footer/footer";
-import Skeleton from "react-loading-skeleton";
+import { useNavigate } from "react-router-dom";
 import SkeletonLoad from "../Component/Skeleton";
-// import { google } from 'googleapis';
+import { gapi } from "gapi-script"; // Import gapi
 
 export default function Pageindex() {
-  // const oAuth2Client = new google.auth.OAuth2(
-  //  process.env.REACT_APP_CLIENT_ID,
-  //   process.env.REACT_APP_CLIENT_SECRET,
-  // );
-  // oAuth2Client.setCredentials({
-  //   refresh_token: process.env.REACT_APP_REFRESH_TOKEN,
-  // });
 
-  // const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
+   const { isLoggedIn} = useContext(AuthContext);
+
+    const navigate = useNavigate();
+
 
   const [fetchdata, setFetchData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const itemsPerPage = 50;
+  const itemsPerPage = 10;
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -31,7 +28,6 @@ export default function Pageindex() {
       .get(apireq)
       .then((res) => {
         setFetchData(res.data);
-        console.log(res.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -45,12 +41,7 @@ export default function Pageindex() {
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value.toLowerCase());
-    setCurrentPage(1); // Reset page when the search query changes
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent form submission
-    // Any additional logic you may want to add for form submission
+    setCurrentPage(1);
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -63,21 +54,15 @@ export default function Pageindex() {
       contest.event.toLowerCase().includes(searchQuery)
   );
 
-
-  /* 
-    Update with your own Client Id and Api key 
-  */
- 
-
   return (
-    <div>
+    isLoggedIn ? (
+    <div className="bg-gray-50 dark:bg-gray-900">
       <Navi />
       <Carousell />
-      <h1 className="text-center font-medium text-3xl px-10 py-10">
+      <h1 className="text-center font-medium text-3xl px-10 py-10 dark:text-white">
         Divide and Conquer!
       </h1>
-      {/* <div className="mb-5 mt-2.5 flex items-center justify-center align-middle w-full"> */}
-      <form onSubmit={handleSubmit} className="ml-10 mr-8 p-5">
+      <form onSubmit={(e) => e.preventDefault()} className="ml-10 mr-8 p-5">
         <label
           htmlFor="default-search"
           className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -85,7 +70,6 @@ export default function Pageindex() {
           Search
         </label>
         <div className="relative">
-          {/* ... (existing code) */}
           <input
             type="search"
             value={searchQuery}
@@ -95,60 +79,18 @@ export default function Pageindex() {
             onChange={handleSearch}
             required
           />
-          <button
-            type="submit"
-            className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            Search
-          </button>
-        </div>
-        <div className="py-5">
-          <div className="flex flex-row space-x-10">
-            <h1 className="font-semibold text-xl mt-1">Search by tags</h1>
-            <button
-              type="button"
-              onClick={() => setSearchQuery("leetcode")}
-              className="text-white bg-cyan-700 hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-            >
-              Leetcode
-            </button>
-            <button
-              type="button"
-              onClick={() => setSearchQuery("geeksforgeeks")}
-              className="text-white bg-cyan-700 hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-            >
-              GeeksForGeeks
-            </button>
-            <button
-              type="button"
-              onClick={() => setSearchQuery("codechef")}
-              className="text-white bg-cyan-700 hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-            >
-              Codechef
-            </button>
-            <button
-              type="button"
-              onClick={() => setSearchQuery("codeforces")}
-              className="text-white bg-cyan-700 hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-            >
-              Codeforces
-            </button>
-          </div>
         </div>
       </form>
-      {/* </div> */}
-      <h2 className="font-medium text-2xl pl-9 px-3 py-3">Upcoming Contest</h2>
-      {isLoading && <SkeletonLoad cnt = {itemsPerPage} />}
+      <h2 className="font-medium text-2xl pl-9 px-3 py-3  dark:text-white">Upcoming Contest</h2>
+      {isLoading && <SkeletonLoad cnt={itemsPerPage} />}
       {filteredData.length === 0 ? (
-        <p className="text-center font-bold p-10 text-gray-500">
+        <p className="text-center font-bold p-10 text-gray-500  dark:text-white">
           No Upcoming Contest found.
         </p>
       ) : (
-        filteredData.map((contest, index) => (
-          <Forms key={index} data={contest} />
-        ))
+        filteredData.map((contest, index) => <Forms key={index} data={contest} />)
       )}
-      <div className="flex overflow-x-auto sm:justify-center">
+      <div className="flex overflow-x-auto sm:justify-center pb-5 ">
         <Pagination
           layout="pagination"
           currentPage={currentPage}
@@ -161,12 +103,11 @@ export default function Pageindex() {
       </div>
       <Foter />
     </div>
+    ) : navigate("/")
   );
 }
 
 function Forms({ data }) {
-  console.log(data);
-
   const hostd = (url) => {
     const index = url.indexOf(".com");
     const indexIn = url.indexOf(".in");
@@ -178,36 +119,76 @@ function Forms({ data }) {
         indexIn !== -1 ? indexIn : Number.MAX_SAFE_INTEGER,
         indexOrg !== -1 ? indexOrg : Number.MAX_SAFE_INTEGER
       );
-      const sliced = url.substring(0, endIndex);
-      return sliced;
+      return url.substring(0, endIndex);
     } else {
       return "Host Name not specified";
     }
   };
 
-  // const handleSetCalendar = async () => {
-  //   try {
-  //     await calendar.events.insert({
-  //       calendarId: 'primary',
-  //       resource: {
-  //         summary: `Meeting with David`,
-  //         location: `3595 California St, San Francisco, CA 94118`,
-  //         description: `Meet with David to talk about the new client project and how to integrate the calendar for booking.`,
-  //         start: {
-  //           dateTime: eventStartTime.toISOString(),
-  //           timeZone: 'America/Denver',
-  //         },
-  //         end: {
-  //           dateTime: eventEndTime.toISOString(),
-  //           timeZone: 'America/Denver',
-  //         },
-  //       },
-  //     });
-  //    alert('Calendar event successfully created.');
-  //   } catch (error) {
-  //     console.error('Error creating calendar event:', error);
-  //   }
-  // };
+  const handleShare = async () => {
+    try {
+      await navigator.share({
+        title: "Check out this contest!",
+        text: `Join the ${data.event} contest organized by ${hostd(data.host)}.`,
+        url: data.href,
+      });
+    } catch (error) {
+      console.error("Error sharing:", error);
+    }
+  };
+
+  const handleSetCalendar = () => {
+    gapi.load("client:auth2", () => {
+      gapi.client.init({
+        apiKey: process.env.REACT_APP_SECRET,
+        clientId: process.env.REACT_APP_CLIENT_ID,
+        discoveryDocs: [
+          "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+        ],
+        scope: "https://www.googleapis.com/auth/calendar.events",
+      });
+
+      gapi.auth2
+        .getAuthInstance()
+        .signIn()
+        .then(() => {
+          const event = {
+            summary: data.event,
+            location: hostd(data.host),
+            description: "Join us for this amazing contest!",
+            start: {
+              dateTime: new Date(data.start).toISOString(),
+              timeZone: "America/Los_Angeles",
+            },
+            end: {
+              dateTime: new Date(data.end).toISOString(),
+              timeZone: "America/Los_Angeles",
+            },
+            recurrence: ["RRULE:FREQ=DAILY;COUNT=2"],
+            attendees: [{ email: "attendee@example.com" }],
+            reminders: {
+              useDefault: false,
+              overrides: [
+                { method: "email", minutes: 24 * 60 },
+                { method: "popup", minutes: 10 },
+              ],
+            },
+          };
+
+          gapi.client.calendar.events
+            .insert({
+              calendarId: "primary",
+              resource: event,
+            })
+            .then((response) => {
+              window.open(response.result.htmlLink);
+            });
+        })
+        .catch((error) => {
+          console.error("Error during sign-in:", error);
+        });
+    });
+  };
 
   const hostduration = (duration) => {
     if (duration === undefined) {
@@ -225,106 +206,6 @@ function Forms({ data }) {
     }
   };
 
-  const handleShare = async () => {
-    try {
-      await navigator.share({
-        title: "Check out this contest!",
-        text: `Join the ${data.event} contest organized by ${hostd(
-          data.host
-        )}.`,
-        url: data.href,
-      });
-    } catch (error) {
-      console.error("Error sharing:", error);
-    }
-  };
-
-  var gapi = window.gapi
-
-  var CLIENT_ID = process.env.REACT_APP_CLIENT_ID
-  var API_KEY = process.env.REACT_APP_SECRET
-  var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
-  var SCOPES = "https://www.googleapis.com/auth/calendar.events"
-
-  const handleSetCalendar = () => {
-    gapi.load('client:auth2', () => {
-      console.log('loaded client')
-
-      gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES,
-      })
-
-      gapi.client.load('calendar', 'v3', () => console.log('bam!'))
-
-      gapi.auth2.getAuthInstance().signIn()
-      .then(() => {
-        
-        var event = {
-          'summary': 'Awesome Event!',
-          'location': '800 Howard St., San Francisco, CA 94103',
-          'description': 'Really great refreshments',
-          'start': {
-            'dateTime': '2020-06-28T09:00:00-07:00',
-            'timeZone': 'America/Los_Angeles'
-          },
-          'end': {
-            'dateTime': '2020-06-28T17:00:00-07:00',
-            'timeZone': 'America/Los_Angeles'
-          },
-          'recurrence': [
-            'RRULE:FREQ=DAILY;COUNT=2'
-          ],
-          'attendees': [
-            {'email': 'lpage@example.com'},
-            {'email': 'sbrin@example.com'}
-          ],
-          'reminders': {
-            'useDefault': false,
-            'overrides': [
-              {'method': 'email', 'minutes': 24 * 60},
-              {'method': 'popup', 'minutes': 10}
-            ]
-          }
-        }
-
-        var request = gapi.client.calendar.events.insert({
-          'calendarId': 'primary',
-          'resource': event,
-        })
-
-        request.execute(event => {
-          console.log(event)
-          window.open(event.htmlLink)
-        })
-        
-
-        /*
-            Uncomment the following block to get events
-        */
-        /*
-        // get events
-        gapi.client.calendar.events.list({
-          'calendarId': 'primary',
-          'timeMin': (new Date()).toISOString(),
-          'showDeleted': false,
-          'singleEvents': true,
-          'maxResults': 10,
-          'orderBy': 'startTime'
-        }).then(response => {
-          const events = response.result.items
-          console.log('EVENTS: ', events)
-        })
-        */
-    
-
-      })
-    })
-  }
-
-
   return (
     <Card className="mt-2 mb-2 ml-10 mr-10">
       <a href={data.href} target="_blank" rel="noopener noreferrer">
@@ -332,7 +213,7 @@ function Forms({ data }) {
           {data.event}
         </h5>
         <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-          Organized By : {hostd(data.host)}
+          Organized By: {hostd(data.host)}
         </h5>
       </a>
       <div className="mb-5 mt-2.5 flex items-center">
@@ -359,12 +240,12 @@ function Forms({ data }) {
         >
           Share
         </button>
-        <button
+        {/* <button
           onClick={handleSetCalendar}
           className="rounded-lg bg-cyan-700 px-5 py-2.5 ml-3 mr-3 text-center text-sm font-smal text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
         >
           Add to Calendar
-        </button>
+        </button> */}
       </div>
     </Card>
   );

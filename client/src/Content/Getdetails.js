@@ -1,47 +1,78 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Navi from "../Component/navbar";
 import Foter from "../Footer/footer";
 import { Button, Input } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../Context/AuthContext";
 import axios from "axios";
 
 export default function Getdetails() {
+
+  const { isLoggedIn} = useContext(AuthContext);
+
+  const userdetails = localStorage.getItem("user");
+
+  // const email = userdetails.email;
+
   const navigate = useNavigate();
 
   const [leetcode, setleecode] = useState("");
   const [codeforces, setcodeforces] = useState("");
-  const [hackerrank, sethackerrank] = useState("");
-  const [gfg, setgfg] = useState("");
-  const [codechief, setcodechief] = useState("");
+  const [codechef, setcodechef] = useState("");
+  const [gfg, setGfg] = useState("");
   const [leetcodepref, setleecodepref] = useState("");
   const [codeforcespref, setcodeforcespref] = useState("");
   const [codechiefpref, setcodechiefpref] = useState("");
-  const [gfgpref, setgfgpref] = useState("");
-  const [displayLeetcode, setDisplayLeetcode] = useState(""); 
+  const [gfgpref, setGfgpref] = useState("");
+
   const handledetails = async () => {
 
-    console.log(leetcode, codeforces, hackerrank, codechief);
+    console.log(userdetails);
 
-    const updatedetails = process.env.REACT_APP_UPDATEDETAILS || "http://localhost:3001/updateDetails";
+    let email = ""; // Initialize email variable
 
-    const response = await axios.post(updatedetails, {
-      leetcode: leetcode,
-      codeforces: codeforces,
-      // hackerrank: hackerrank,
-      codechef: codechief,
+    if (userdetails) {
+      const userDetailsObject = JSON.parse(userdetails);
+      email = userDetailsObject.email;
+    }
+
+    console.log(email);
+
+    console.log(
+      leetcode,
+      codeforces,
+      codechef,
+      leetcodepref,
+      gfgpref,
+      codeforcespref,
+      codechiefpref
+    );
+
+    const updatedetails = process.env.REACT_APP_BACKAPI;
+
+    const response = await axios.post(`${updatedetails}/getDetails/${email}`, {
+      leetcode,
+      codeforces,
+      codechef,
+      leetcodepref,
+      codeforcespref,
+      codechiefpref,
+      gfg,
+      gfgpref,
     });
 
-    if(response.status === 200){
-        // navigate("/home");
-        console.log(response.data);
-        setDisplayLeetcode(response.data.leetcodeProfile);
-    }
-    else{
-        alert("Error in sending details");
+    console.log(`Eror in client : ${response.data}`);
+
+    if (response.status === 200) {
+      console.log(response.data);
+      navigate("/home");
+    } else {
+      alert("Error in sending details");
     }
   };
 
   return (
+    isLoggedIn ? (    
     <div>
       <h1 className="text-center text-2xl p-5 font-bold">
         Send Us Your Details
@@ -61,7 +92,7 @@ export default function Getdetails() {
             type="text"
             id="base-input"
             value={leetcode}
-            onChange={(e)=>setleecode(e.target.value)}
+            onChange={(e) => setleecode(e.target.value)}
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
@@ -74,7 +105,9 @@ export default function Getdetails() {
           </label>
           <input
             type="text"
-            id="base-input"
+            id="geeksforgeek-input"
+            onChange={(e) => setGfg(e.target.value)}
+            value={gfg}
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
@@ -88,8 +121,8 @@ export default function Getdetails() {
           <input
             type="text"
             id="base-input"
-            value={codechief}
-            onChange={(e)=>setcodechief(e.target.value)}
+            value={codechef}
+            onChange={(e) => setcodechef(e.target.value)}
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
@@ -104,7 +137,7 @@ export default function Getdetails() {
             type="text"
             id="base-input"
             value={codeforces}
-            onChange={(e)=>setcodeforces(e.target.value)}
+            onChange={(e) => setcodeforces(e.target.value)}
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
@@ -121,6 +154,7 @@ export default function Getdetails() {
                   type="checkbox"
                   value=""
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                  onClick={(e) => setleecodepref("Leetcode")}
                 />
                 <label
                   for="vue-checkbox-list"
@@ -137,6 +171,7 @@ export default function Getdetails() {
                   type="checkbox"
                   value=""
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                  onClick={(e) => setGfgpref("GeeksForGeeks")}
                 />
                 <label
                   for="react-checkbox-list"
@@ -153,6 +188,7 @@ export default function Getdetails() {
                   type="checkbox"
                   value=""
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                  onClick={(e) => setcodechiefpref("CodeChef")}
                 />
                 <label
                   for="angular-checkbox-list"
@@ -169,6 +205,7 @@ export default function Getdetails() {
                   type="checkbox"
                   value=""
                   class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                  onClick={(e) => setcodeforcespref("CodeForces")}
                 />
                 <label
                   for="laravel-checkbox-list"
@@ -182,9 +219,9 @@ export default function Getdetails() {
           <Button className="my-5" onClick={handledetails}>
             Submit Details
           </Button>
-      <div dangerouslySetInnerHTML={{ __html: displayLeetcode }}/>
         </div>
       </div>
     </div>
+    ) : navigate("/")
   );
 }

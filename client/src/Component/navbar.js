@@ -1,11 +1,22 @@
 import { Avatar, Dropdown, DarkThemeToggle, Navbar } from "flowbite-react";
 import logo from "../images/cc.png";
-import { useContext } from "react";
+import whitelogo from "../images/cc.png";
+import React , { useContext } from "react";
 import "./navstyles.css";
 import { AuthContext } from "../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Navi() {
+
+ 
+  const navigate = useNavigate();
+
   const { login, user, logout } = useContext(AuthContext);
+
+  const handlelogout = () => {
+    logout();
+    navigate("/");
+  }
 
   const imgpic = user?.imageUrl;
 
@@ -14,11 +25,11 @@ export default function Navi() {
       <>
         <Navbar fluid rounded>
           <Navbar.Brand href="/">
-            <img
-              src={logo}
-              className="logo-nav-class"
-              alt="Flowbite React Logo"
-            />
+          <h1 className="lg:text-xl md:text-l dark:text-white"
+              alt="Flowbite React Logo">
+                CCode
+            </h1>
+
           </Navbar.Brand>
           <div className="flex md:order-2">
             <Dropdown
@@ -32,8 +43,11 @@ export default function Navi() {
                   {user?.email}
                 </span>
               </Dropdown.Header>
+              {/* <Dropdown.Item>
+                <button onClick={() => navigate("/dashboard")}>Dashboard</button>
+              </Dropdown.Item> */}
               <Dropdown.Item>
-                <button onClick={logout}>Logout</button>
+                <button onClick={handlelogout}>Logout</button>
               </Dropdown.Item>
             </Dropdown>
             <Navbar.Toggle />
@@ -42,8 +56,8 @@ export default function Navi() {
             <Navbar.Link href="./" className="text-center mt-1 text-xl" active>
               Home
             </Navbar.Link>
-            <Navbar.Link  >
-              <DarkThemeToggle />
+            <Navbar.Link >
+              <DarkThemeToggle/>
             </Navbar.Link>
           </Navbar.Collapse>
         </Navbar>

@@ -1,3 +1,5 @@
+
+
 // Require google from googleapis package.
 const { google } = require('googleapis')
 
@@ -6,8 +8,8 @@ const { OAuth2 } = google.auth
 
 // Create a new instance of oAuth and set our Client ID & Client Secret.
 const oAuth2Client = new OAuth2(
-  'YOUR CLIENT ID GOES HERE',
-  'YOUR CLIENT SECRET GOES HERE'
+  REACT_APP_CLIENT_SECRET,
+  REACT_APP_CLIENT_ID,
 )
 
 // Call the setCredentials method on our oAuth2Client instance and set our refresh token.

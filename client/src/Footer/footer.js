@@ -8,13 +8,11 @@ export default function Foter() {
     <Footer container>
       <div className="w-full text-center">
         <div className="w-full justify-between sm:flex sm:items-center sm:justify-between">
-          <Footer.Brand
-            href="./"
-            src={logo}
-            className="footer-logo w-136 h-20 flex" 
-            alt="CodeCalendar Logo"
-            name="CodeCalendar"
-          />
+          <Footer.Brand href='/'>
+            <h1 className="lg:text-xl md:text-l dark:text-white">
+                CCode
+            </h1>
+          </Footer.Brand>
           <Footer.LinkGroup>
             <Footer.Link href="./">Home</Footer.Link>
           </Footer.LinkGroup>
