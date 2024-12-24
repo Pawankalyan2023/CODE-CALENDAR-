@@ -27,26 +27,26 @@ export default function Getdetails() {
 
   const handledetails = async () => {
 
-    console.log(userdetails);
+    // console.log(userdetails);
 
-    let email = ""; // Initialize email variable
+    let email = ""; 
 
     if (userdetails) {
       const userDetailsObject = JSON.parse(userdetails);
       email = userDetailsObject.email;
     }
 
-    console.log(email);
+    // console.log(email);
 
-    console.log(
-      leetcode,
-      codeforces,
-      codechef,
-      leetcodepref,
-      gfgpref,
-      codeforcespref,
-      codechiefpref
-    );
+    // console.log(
+    //   leetcode,
+    //   codeforces,
+    //   codechef,
+    //   leetcodepref,
+    //   gfgpref,
+    //   codeforcespref,
+    //   codechiefpref
+    // );
 
     const updatedetails = process.env.REACT_APP_BACKAPI;
 
@@ -64,7 +64,7 @@ export default function Getdetails() {
     console.log(`Eror in client : ${response.data}`);
 
     if (response.status === 200) {
-      console.log(response.data);
+      // console.log(response.data);
       navigate("/home");
     } else {
       alert("Error in sending details");
