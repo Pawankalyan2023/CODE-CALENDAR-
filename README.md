@@ -30,7 +30,7 @@ Upcoming Features(V2)
 - **Express**: As a web framework for the backend.
 - **Node.js**: For server-side scripting.
 - **MySQL**: For storing contest details and user data.
-- **MySQL**: [Clist.By](https://clist.by/) to get the contest details and user coding track(V2)
+- **API**: [Clist.By](https://clist.by/) to get the contest details and user coding track(V2)
 
 ## Installation
 
